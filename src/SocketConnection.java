@@ -5,12 +5,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketOptions;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class SocketConnection implements Runnable {
 	private static Socket player = null;// 静态类每个进程维护同一个链接
-	//private static StringBuilder mStringBuilder;
+	// private static StringBuilder mStringBuilder;
 	private static String MsgType[];
 	private static PrintWriter printWriter = null;
 	private static InputStreamReader streamReader = null;// InputStreamReader是低层和高层串流之间的桥梁
@@ -25,6 +26,7 @@ public class SocketConnection implements Runnable {
 			player = new Socket(IpInfo.ServerIp, IpInfo.ServerPort,
 					InetAddress.getByName(IpInfo.ClientIp), IpInfo.ClientPort);
 			// 通过printWriter 来向服务器发送消息
+			player.setReuseAddress(true);
 			printWriter = new PrintWriter(player.getOutputStream());
 			// printWriter.println(Message.REG_MSG + " " + 2333 + " playerName"+
 			// " \n");注册测试
@@ -58,19 +60,21 @@ public class SocketConnection implements Runnable {
 			try {
 				while ((servermsg = reader.readLine()) != null) {
 					// mStringBuilder.append(servermsg); // 添加消息
-					if (servermsg.contains(Message.INQUIRE_MSG_START)) {
-						SendMsg(" all_in ");
-					}
-					if (servermsg.contains(Message.GAME_OVER_MSG)) {
-						CloseConnection();
-						Player.SetGameOver(true);
-					}
-					
+					/*
+					 * if (servermsg.contains(Message.INQUIRE_MSG_START)) {
+					 * SendMsg(" all_in "); } if
+					 * (servermsg.contains(Message.GAME_OVER_MSG)) {
+					 * CloseConnection(); Player.SetGameOver(true); }
+					 */
+
 					mPrintWriter.println(servermsg);
 					mPrintWriter.flush();
-					//MessageQueue.mBlockQueue.put(servermsg);
+					MessageQueue.mBlockQueue.put(servermsg);
 				}
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -82,7 +86,6 @@ public class SocketConnection implements Runnable {
 		printWriter.flush();
 		return msg;
 	}
-
 
 	public static void CloseConnection() {
 		try {
