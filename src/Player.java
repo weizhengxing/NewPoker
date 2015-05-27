@@ -4,7 +4,7 @@ public class Player {
 	private String playerName = "Meilier";
 	private static int playerMoney;
 	private SocketConnection mSocketConnection = null;
-	private HandleMessage mHandleMessage = null;
+	//private HandleMessage mHandleMessage = null;
 	private static boolean gameovermsg = false;
 
 	public Player() {
@@ -19,8 +19,8 @@ public class Player {
 	public void AnalysisMsg() { // 解析消息并处理消息
 		Thread t = new Thread(mSocketConnection);
 		t.start();
-		mHandleMessage= new HandleMessage();
-		new Thread(mHandleMessage).start();
+		//mHandleMessage= new HandleMessage();
+		//new Thread(mHandleMessage).start();
 	}
 
 	public static boolean isGameOver() {

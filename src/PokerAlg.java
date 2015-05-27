@@ -1,3 +1,9 @@
-public class PokerAlg {
+public class PokerAlg implements Runnable{
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+
+	}
 
 }
